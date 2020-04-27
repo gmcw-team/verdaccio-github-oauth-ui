@@ -8,6 +8,7 @@ import { Config, getConfig } from "./Config"
 export class AuthCore {
 
   private readonly requiredGroup = getConfig(this.config, "org")
+  private readonly allowPublic = getConfig(this.config, "public")
 
   constructor(
     private readonly verdaccio: Verdaccio,
@@ -35,7 +36,7 @@ export class AuthCore {
   }
 
   canAuthenticate(username: string, groups: string[]) {
-    const allow = groups.includes(this.requiredGroup)
+    const allow = this.allowPublic || groups.includes(this.requiredGroup)
     if (!allow) {
       logger.error(this.getDeniedMessage(username))
     }

@@ -14,6 +14,7 @@ export interface PluginConfig {
   "client-id": string,
   "client-secret": string,
   "enterprise-origin"?: string,
+  "public"?: boolean
 }
 
 export type PluginConfigKey = keyof PluginConfig

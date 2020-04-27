@@ -24,6 +24,8 @@ import { ServeStatic } from "./ServeStatic"
 export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
 
   private readonly requiredGroup = getConfig(this.config, "org")
+  private readonly allowPublic = getConfig(this.config, "public")
+
   private readonly provider = new GitHubAuthProvider(this.config)
   private readonly cache = new Cache(this.provider)
   private readonly verdaccio = new Verdaccio(this.config)
@@ -60,7 +62,11 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
 
     if (this.core.canAuthenticate(username, groups)) {
       callback(null, [this.requiredGroup])
-    } else {
+    } else if (this.allowPublic) {
+      console.warn("Authenticating due to Public enabled");
+      callback(null, [])
+    }
+    else {
       callback(null, false)
     }
   }
